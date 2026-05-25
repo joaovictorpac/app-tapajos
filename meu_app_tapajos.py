@@ -67,7 +67,8 @@ s2_2025 = (ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
 # ==============================================================================
 Map = geemap.Map(center=[-6.15, -56.88], zoom=12)
 # Adicione isso logo após criar o Map
-Map.add_basemap('HYBRID')
+# Force o carregamento de um mapa de fundo padrão
+Map.add_basemap('SATELLITE')
 
 vis_params = {'bands': ['B11', 'B8', 'B3'], 'min': 0.0, 'max': 0.35}
 
@@ -75,6 +76,10 @@ camada_2019 = geemap.ee_tile_layer(s2_2019, vis_params, '2019')
 camada_2025 = geemap.ee_tile_layer(s2_2025, vis_params, '2025')
 
 Map.split_map(left_layer=camada_2019, right_layer=camada_2025)
+
+# Adicione isso logo após o Map.split_map
+st.write("Imagens carregadas com sucesso!")
+st.write(f"ID da Imagem 2019: {s2_2019.getInfo()['id'] if 'id' in s2_2019.getInfo() else 'Processada'}")
 
 dicionario_legenda = {
     'Vegetação Preservada': '27ae60',
