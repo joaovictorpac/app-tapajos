@@ -19,20 +19,20 @@ A bacia do Tapajós tem sofrido intensas transformações. Observe como as cicat
 """)
 
 # ==============================================================================
-# 2. INICIALIZAÇÃO DO EARTH ENGINE (Simplificada)
+# 2. INICIALIZAÇÃO DO EARTH ENGINE (MÉTODO ROBUSTO)
 # ==============================================================================
 @st.cache_resource
 def iniciar_ee():
-    # Carrega os dados do JSON dos Secrets
+    # 1. Carrega as credenciais
     cred_dict = json.loads(st.secrets["GOOGLE_SERVICE_ACCOUNT"]["json"])
     
-    # Cria a credencial
+    # 2. Define a credencial
     credentials = ee.ServiceAccountCredentials(
         email=cred_dict['client_email'],
         key_data=cred_dict['private_key']
     )
     
-    # Inicializa
+    # 3. Inicializa sem testes de atributos
     ee.Initialize(credentials=credentials)
     return True
 
