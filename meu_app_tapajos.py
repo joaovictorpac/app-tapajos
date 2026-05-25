@@ -84,11 +84,16 @@ dicionario_legenda = {
 }
 Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position='bottomleft')
 # ==============================================================================
-# 5. RENDERIZAÇÃO FINAL
+# 5. RENDERIZAÇÃO FINAL (Ajuste de Container Seguro)
 # ==============================================================================
+st.subheader("Mapa Interativo do Tapajós")
 
-# O geemap funciona melhor quando forçamos o basemap aqui
-Map.add_basemap('HYBRID')
+# Criamos um container fixo para evitar que o Streamlit 'perca' o mapa
+map_container = st.container()
 
-# Renderiza o mapa diretamente
-Map.to_streamlit(height=700)
+with map_container:
+    # Usamos o método mais compatível com servidores em nuvem
+    Map.to_streamlit(height=700)
+
+# Mensagem de rodapé para saber que o app finalizou
+st.info("Mapa renderizado com sucesso. Utilize os controles para explorar as camadas.")
