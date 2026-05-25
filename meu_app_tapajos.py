@@ -65,6 +65,8 @@ s2_2025 = (ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
 # 4. CONSTRUÇÃO DO MAPA INTERATIVO E LEGENDA
 # ==============================================================================
 Map = geemap.Map(center=[-6.15, -56.88], zoom=12)
+# Adicione isso logo após criar o Map
+Map.add_basemap('HYBRID')
 
 vis_params = {'bands': ['B11', 'B8', 'B3'], 'min': 0.0, 'max': 0.35}
 
@@ -78,9 +80,14 @@ dicionario_legenda = {
     'Desmatamento / Garimpo': 'e74c3c'
 }
 Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position='bottomleft')
+#========================================================================================================
+# [Mantenha todo o código anterior de processamento e definição do Map]
 
-# ==============================================================================
-# 5. RENDERIZAÇÃO FINAL
-# ==============================================================================
-with st.container():
-    Map.to_streamlit(height=700)
+# Adicione uma mensagem de texto para garantir que o código chegou aqui
+st.write("Processamento concluído. Tentando renderizar o mapa...")
+
+# Tente renderizar o mapa de forma mais simples
+Map.to_streamlit(height=700)
+
+# Adicione um comando de debug para ver se o objeto Map existe
+st.write(f"Centro do mapa: {Map.centerObject}")
