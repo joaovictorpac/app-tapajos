@@ -1,18 +1,15 @@
+import streamlit as st
 import ee
 import geemap
-import streamlit as st
+import json # Importante para ler as credenciais
 
 # ==============================================================================
 # 1. CONFIGURAÇÃO DA PÁGINA (STREAMLIT)
 # ==============================================================================
-# Define que o site ocupará a tela inteira
 st.set_page_config(page_title="Monitoramento Tapajós", layout="wide")
 
-# Construção do Painel Lateral (Substitui o antigo ui.Panel)
 st.sidebar.title("Avanço do Garimpo (Tapajós)")
-
 st.sidebar.info("↔️ **Dica:** Arraste a barra central do mapa para comparar as datas.")
-
 st.sidebar.markdown("""
 A bacia do Tapajós tem sofrido intensas transformações. Observe como as cicatrizes de desmatamento associadas à mineração avançaram em direção à floresta.
 
@@ -22,13 +19,24 @@ A bacia do Tapajós tem sofrido intensas transformações. Observe como as cicat
 """)
 
 # ==============================================================================
-# 2. INICIALIZAÇÃO DO EARTH ENGINE
+# 2. INICIALIZAÇÃO DO EARTH ENGINE (CORRIGIDA)
 # ==============================================================================
-# O @st.cache_resource garante que o site não faça login no Google a cada clique
 @st.cache_resource
 def iniciar_ee():
-    # Substitua pelo ID do seu projeto do Google Cloud
-  ee.Initialize(project='ee-joaovictorpac')
+    # Carrega os dados do JSON que você configurou nos Secrets do Streamlit
+    cred_dict = json.loads(st.secrets["GOOGLE_SERVICE_ACCOUNT"]["json"])
+    
+    # Cria a credencial usando os dados da conta de serviço
+    credentials = ee.ServiceAccountCredentials(
+        email=cred_dict['client_email'],
+        key_data=cred_dict['private_key']
+    )
+    
+    # Inicializa usando as credenciais, não apenas o project ID
+    ee.Initialize(credentials=credentials)
+
+# Chame a função imediatamente após a definição
+iniciar_ee()
 
 # ==============================================================================
 # 3. PROCESSAMENTO ESPACIAL (GEEMAP / GEE)
@@ -56,7 +64,6 @@ s2_2025 = (ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
 # ==============================================================================
 # 4. CONSTRUÇÃO DO MAPA INTERATIVO E LEGENDA
 # ==============================================================================
-# Cria a tela do mapa
 Map = geemap.Map(center=[-6.15, -56.88], zoom=12)
 
 vis_params = {'bands': ['B11', 'B8', 'B3'], 'min': 0.0, 'max': 0.35}
@@ -64,10 +71,8 @@ vis_params = {'bands': ['B11', 'B8', 'B3'], 'min': 0.0, 'max': 0.35}
 camada_2019 = geemap.ee_tile_layer(s2_2019, vis_params, '2019')
 camada_2025 = geemap.ee_tile_layer(s2_2025, vis_params, '2025')
 
-# Aplica o Split Panel
 Map.split_map(left_layer=camada_2019, right_layer=camada_2025)
 
-# Adiciona a legenda flutuante diretamente no mapa do geemap
 dicionario_legenda = {
     'Vegetação Preservada': '27ae60',
     'Desmatamento / Garimpo': 'e74c3c'
@@ -75,10 +80,7 @@ dicionario_legenda = {
 Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position='bottomleft')
 
 # ==============================================================================
-# 5. RENDERIZAÇÃO FINAL (Corrigida)
+# 5. RENDERIZAÇÃO FINAL
 # ==============================================================================
-
-# Cria um container na página para garantir que o mapa tenha espaço para desenhar
 with st.container():
-    # Isso força o geemap a renderizar dentro do layout do Streamlit
     Map.to_streamlit(height=700)
