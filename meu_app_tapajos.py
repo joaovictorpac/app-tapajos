@@ -83,17 +83,22 @@ dicionario_legenda = {
     'Desmatamento / Garimpo': 'e74c3c'
 }
 Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position='bottomleft')
+
+
 # ==============================================================================
-# 5. RENDERIZAÇÃO FINAL (Ajuste de Container Seguro)
+# 5. RENDERIZAÇÃO FINAL - FORÇANDO O IFRAME
 # ==============================================================================
 st.subheader("Mapa Interativo do Tapajós")
 
-# Criamos um container fixo para evitar que o Streamlit 'perca' o mapa
-map_container = st.container()
+# Em vez de tentar renderizar o objeto Map diretamente, 
+# nós exportamos o mapa como um arquivo HTML temporário e o exibimos via iframe.
+# Isso resolve 99% dos problemas de tela em branco em nuvem.
 
-with map_container:
-    # Usamos o método mais compatível com servidores em nuvem
-    Map.to_streamlit(height=700)
+mapa_html = "mapa_tapajos.html"
+Map.to_html(mapa_html)
 
-# Mensagem de rodapé para saber que o app finalizou
-st.info("Mapa renderizado com sucesso. Utilize os controles para explorar as camadas.")
+# Lê o arquivo e exibe como um Iframe seguro
+with open(mapa_html, 'r', encoding='utf-8') as f:
+    st.components.v1.html(f.read(), height=700)
+
+
