@@ -19,25 +19,23 @@ A bacia do Tapajós tem sofrido intensas transformações. Observe como as cicat
 """)
 
 # ==============================================================================
-# 2. INICIALIZAÇÃO DO EARTH ENGINE (CORRIGIDA)
+# 2. INICIALIZAÇÃO DO EARTH ENGINE (BLINDADA)
 # ==============================================================================
-@st.cache_resource
 def iniciar_ee():
-    # Carrega os dados do JSON que você configurou nos Secrets do Streamlit
-    cred_dict = json.loads(st.secrets["GOOGLE_SERVICE_ACCOUNT"]["json"])
-    
-    # Cria a credencial usando os dados da conta de serviço
-    credentials = ee.ServiceAccountCredentials(
-        email=cred_dict['client_email'],
-        key_data=cred_dict['private_key']
-    )
-    
-    # Inicializa usando as credenciais, não apenas o project ID
-    ee.Initialize(credentials=credentials)
+    # Verifica se já está inicializado para não dar erro
+    try:
+        ee.GetRegion
+    except ee.EEException:
+        # Se não estiver, faz a conexão com as credenciais dos Secrets
+        cred_dict = json.loads(st.secrets["GOOGLE_SERVICE_ACCOUNT"]["json"])
+        credentials = ee.ServiceAccountCredentials(
+            email=cred_dict['client_email'],
+            key_data=cred_dict['private_key']
+        )
+        ee.Initialize(credentials=credentials)
 
-# Chame a função imediatamente após a definição
+# Executa a inicialização
 iniciar_ee()
-
 # ==============================================================================
 # 3. PROCESSAMENTO ESPACIAL (GEEMAP / GEE)
 # ==============================================================================
