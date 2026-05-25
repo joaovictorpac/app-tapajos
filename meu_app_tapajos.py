@@ -65,7 +65,8 @@ s2_2025 = (ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
 # ==============================================================================
 # 4. CONSTRUÇÃO DO MAPA INTERATIVO E LEGENDA
 # ==============================================================================
-Map = geemap.Map(center=[-6.15, -56.88], zoom=12)
+# Mude a linha do Map para esta, forçando o centro:
+Map = geemap.Map(center=[-15.0, -55.0], zoom=4)
 # Adicione isso logo após criar o Map
 # Force o carregamento de um mapa de fundo padrão
 Map.add_basemap('SATELLITE')
@@ -86,19 +87,12 @@ Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position
 
 
 # ==============================================================================
-# 5. RENDERIZAÇÃO FINAL - FORÇANDO O IFRAME
+# 5. RENDERIZAÇÃO FINAL - MODO COMPATIBILIDADE
 # ==============================================================================
-st.subheader("Mapa Interativo do Tapajós")
 
-# Em vez de tentar renderizar o objeto Map diretamente, 
-# nós exportamos o mapa como um arquivo HTML temporário e o exibimos via iframe.
-# Isso resolve 99% dos problemas de tela em branco em nuvem.
+# Força o mapa a usar o layout de tiles simples, que não bloqueia no navegador
+Map.to_streamlit(height=700)
 
-mapa_html = "mapa_tapajos.html"
-Map.to_html(mapa_html)
-
-# Lê o arquivo e exibe como um Iframe seguro
-with open(mapa_html, 'r', encoding='utf-8') as f:
-    st.components.v1.html(f.read(), height=700)
+# Fim do arquivo
 
 
