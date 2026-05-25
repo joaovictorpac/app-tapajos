@@ -28,9 +28,7 @@ A bacia do Tapajós tem sofrido intensas transformações. Observe como as cicat
 @st.cache_resource
 def iniciar_ee():
     # Substitua pelo ID do seu projeto do Google Cloud
-    ee.Initialize(project='seu-projeto-id') 
-
-ee.Initialize(project='ee-joaovictorpac')
+  ee.Initialize(project='ee-joaovictorpac')
 
 # ==============================================================================
 # 3. PROCESSAMENTO ESPACIAL (GEEMAP / GEE)
@@ -77,7 +75,10 @@ dicionario_legenda = {
 Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position='bottomleft')
 
 # ==============================================================================
-# 5. RENDERIZAÇÃO FINAL
+# 5. RENDERIZAÇÃO FINAL (Corrigida)
 # ==============================================================================
-# Envia o mapa pronto para ser exibido na página do Streamlit
-Map.to_streamlit(height=700)
+
+# Cria um container na página para garantir que o mapa tenha espaço para desenhar
+with st.container():
+    # Isso força o geemap a renderizar dentro do layout do Streamlit
+    Map.to_streamlit(height=700)
