@@ -77,23 +77,18 @@ camada_2025 = geemap.ee_tile_layer(s2_2025, vis_params, '2025')
 
 Map.split_map(left_layer=camada_2019, right_layer=camada_2025)
 
-# Adicione isso logo após o Map.split_map
-st.write("Imagens carregadas com sucesso!")
-st.write(f"ID da Imagem 2019: {s2_2019.getInfo()['id'] if 'id' in s2_2019.getInfo() else 'Processada'}")
 
 dicionario_legenda = {
     'Vegetação Preservada': '27ae60',
     'Desmatamento / Garimpo': 'e74c3c'
 }
 Map.add_legend(title="Legenda Óptica", legend_dict=dicionario_legenda, position='bottomleft')
-#========================================================================================================
-# [Mantenha todo o código anterior de processamento e definição do Map]
+# ==============================================================================
+# 5. RENDERIZAÇÃO FINAL
+# ==============================================================================
 
-# Adicione uma mensagem de texto para garantir que o código chegou aqui
-st.write("Processamento concluído. Tentando renderizar o mapa...")
+# O geemap funciona melhor quando forçamos o basemap aqui
+Map.add_basemap('HYBRID')
 
-# Tente renderizar o mapa de forma mais simples
+# Renderiza o mapa diretamente
 Map.to_streamlit(height=700)
-
-# Adicione um comando de debug para ver se o objeto Map existe
-st.write(f"Centro do mapa: {Map.centerObject}")
