@@ -30,7 +30,7 @@ def iniciar_ee():
     # Substitua pelo ID do seu projeto do Google Cloud
     ee.Initialize(project='seu-projeto-id') 
 
-iniciar_ee()
+ee.Initialize(project='ee-joaovictorpac')
 
 # ==============================================================================
 # 3. PROCESSAMENTO ESPACIAL (GEEMAP / GEE)
